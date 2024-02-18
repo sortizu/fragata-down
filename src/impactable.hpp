@@ -1,6 +1,5 @@
 #pragma once
 class Impactable{
     public:
-        Impactable(){};
-        void impact();
+        virtual void impact()=0;
 };

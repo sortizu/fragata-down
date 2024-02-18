@@ -1,15 +1,15 @@
 #pragma once
 #include <raylib.h>
-#include "entity.hpp"
+#include "physics_entity.hpp"
 #include "impactable.hpp"
 
-class Ship: public Impactable, public Entity{
+enum ShipSize {SMALL, MEDIUM, LARGE};
+
+class Ship: public PhysicsEntity, public Impactable{
     public:
-        Ship();
-        ~Ship();
-        void draw();
-        void impact();
+        Ship(ShipSize size);
+        void draw() override;
+        void impact() override;
     private:
-        enum ShipSize {SMALL, MEDIUM, LARGE};
         ShipSize size;
 };
