@@ -6,6 +6,7 @@ class Cannonball : public PhysicsEntity
         Cannonball();
         void draw() override;
         void update() override;
+        void onCollision(PhysicsEntity* otherEntity) override;
     private:
         Vector2 targetPosition;
 };

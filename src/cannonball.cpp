@@ -18,3 +18,8 @@ void Cannonball::update()
 {
     PhysicsEntity::update();
 }
+
+void Cannonball::onCollision(PhysicsEntity *otherEntity)
+{
+    setActive(false);
+}

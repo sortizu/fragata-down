@@ -48,3 +48,8 @@ void Ship::impact()
         setActive(false);
     }
 }
+
+void Ship::onCollision(PhysicsEntity *otherEntity)
+{
+    impact();
+}

@@ -15,6 +15,8 @@ class Entity {
         Vector2 getPosition();
         Texture2D getTexture();
         int getHp();
+        void setEntityType(int entity_type);
+        int getEntityType();
         void setActive(bool active);
         bool isActive();
         void destroy();
@@ -23,4 +25,5 @@ class Entity {
         Texture2D texture;
         bool active = true;
         int hp;
+        int entity_type;
 };

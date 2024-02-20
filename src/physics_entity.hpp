@@ -10,6 +10,7 @@ class PhysicsEntity : public Entity {
         void setColliderSize(float width, float height);
         Vector2 getColliderSize();
         bool checkCollision(PhysicsEntity* otherEntity);
+        virtual void onCollision(PhysicsEntity* otherEntity);
         void setColliderOffset(float offsetX, float offsetY);
         Vector2 getColliderOffset();
     private:

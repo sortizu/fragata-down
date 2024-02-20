@@ -53,6 +53,10 @@ bool PhysicsEntity::checkCollision(PhysicsEntity *otherEntity)
     return isColliding;
 }
 
+void PhysicsEntity::onCollision(PhysicsEntity *otherEntity)
+{
+}
+
 void PhysicsEntity::setColliderOffset(float offsetX, float offsetY)
 {
     colliderOffset.x = offsetX;

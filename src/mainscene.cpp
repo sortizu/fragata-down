@@ -2,7 +2,9 @@
 #include "ship.hpp"
 #include <iostream>
 #include "cannonball.hpp"
+#include <future>
 
+int shipCount=0;
 
 MainScene::MainScene()
 {
@@ -19,7 +21,6 @@ void MainScene::update()
         spawnShips();
         spawnShipTimer = GetTime();
     }
-    manageCannonCollisions();
     deactiveShips();
     deactiveCannonballs();
 }
@@ -28,6 +29,8 @@ void MainScene::draw()
     Scene::draw();
     // Show fps
     DrawText(("FPS: " + std::to_string(GetFPS())).c_str(), GetScreenWidth()-100, 10, 20, WHITE);
+    std::string shipCountStr = std::to_string(shipCount);
+    DrawText(("Ship count: " + shipCountStr).c_str(), 10, 10, 20, WHITE);
 }
 
 void MainScene::spawnShips()
@@ -54,7 +57,7 @@ void MainScene::spawnShips()
 void MainScene::deactiveShips()
 {
     std::vector<Entity*> entities = getEntities();
-    int shipCount = 0;
+    shipCount = 0;
     for (int i = 0; i < int(entities.size()); i++)
     {
         // Checks if the entity is an instance of Ship
@@ -67,9 +70,7 @@ void MainScene::deactiveShips()
             }
         }
     }
-    // Shows the number of ships in the screen
-    std::string shipCountStr = std::to_string(shipCount);
-    DrawText(("Ship count: " + shipCountStr).c_str(), 10, 10, 20, WHITE);
+    
 }
 
 void MainScene::deactiveCannonballs()
@@ -83,32 +84,6 @@ void MainScene::deactiveCannonballs()
             if (entities[i]->getPosition().y > GetScreenHeight())
             {
                 entities[i]->setActive(false);
-            }
-        }
-    }
-}
-
-void MainScene::manageCannonCollisions()
-{
-    std::vector<Entity*> entities = getEntities();
-    for (int i = 0; i < int(entities.size()); i++)
-    {
-        if (dynamic_cast<Cannonball*>(entities[i]))
-        {
-            PhysicsEntity *physicsEntity = dynamic_cast<PhysicsEntity*>(entities[i]);
-            for (int j = 0; j < int(entities.size()); j++)
-            {
-                // Checks if the entity is an instance of Impactable and PhysicsEntity
-                if (dynamic_cast<Impactable*>(entities[j]) && dynamic_cast<PhysicsEntity*>(entities[j]))
-                {
-                    
-                    if(physicsEntity->checkCollision(dynamic_cast<PhysicsEntity*>(entities[j])))
-                    {
-                        Impactable *impactable = dynamic_cast<Impactable*>(entities[j]);
-                        impactable->impact();
-                        entities[i]->setActive(false);
-                    }
-                }
             }
         }
     }

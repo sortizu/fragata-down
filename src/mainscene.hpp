@@ -7,11 +7,15 @@ class MainScene : public Scene
         MainScene();
         void draw() override;
         void update() override;
+        enum EntityType
+        {
+            SHIP,
+            CANNONBALL
+        };
     private:
         void spawnShips();
         void deactiveShips();
         void deactiveCannonballs();
-        void manageCannonCollisions();
         void manageInput();
         double spawnShipTimer = 0;
         double spawningTime = 3;

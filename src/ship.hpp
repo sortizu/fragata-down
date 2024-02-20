@@ -10,6 +10,7 @@ class Ship: public PhysicsEntity, public Impactable{
         Ship(ShipSize size);
         void draw() override;
         void impact() override;
+        void onCollision(PhysicsEntity* otherEntity) override;
     private:
         ShipSize size;
 };

@@ -41,6 +41,16 @@ int Entity::getHp()
     return hp;
 }
 
+void Entity::setEntityType(int entity_type)
+{
+    this->entity_type = entity_type;
+}
+
+int Entity::getEntityType()
+{
+    return entity_type;
+}
+
 void Entity::setActive(bool active)
 {
     this->active = active;
