@@ -2,11 +2,14 @@
 #include <raylib.h>
 #include <vector>
 #include "entity.hpp"
+#include "mutex"
+
 class Scene{
     public:
     Scene();
     virtual void draw();
     virtual void update();
+    virtual void physicsUpdate();
     void destroy();
     void addEntity(Entity* entity);
     void setBackgroundColor(Color color);

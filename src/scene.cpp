@@ -3,6 +3,8 @@
 #include <future>
 #include "physics_entity.hpp"
 
+double startTime = 0.0;
+double endTime = 0.0;
 double timer = 0.0;
 double executionTime = 0.0;
 double executionTimeAc = 0.0;
@@ -10,7 +12,7 @@ double averageExecutionTime = 0.0;
 int executionCounter = 0;
 
 Scene::Scene(){
-    
+    std::thread physicsThread(&Scene::physicsUpdate, this);
 }
 
 void Scene::draw()
@@ -31,22 +33,19 @@ void Scene::update()
         entities[i]->update();
     }
 
-    double startTime = GetTime();
-    manageCollisionsPll(0, entities.size(), 0);
-    executionCounter++;
-    double endTime = GetTime();
-    executionTime = endTime - startTime;
-    executionTimeAc += executionTime;
-    timer += GetFrameTime();
+    //manageCollisionsPll(0, entities.size(), 0);
+}
 
-    if(timer > 0.5)
+
+
+
+void Scene::physicsUpdate()
+{
+    while (true)
     {
-        averageExecutionTime = executionTimeAc / executionCounter;
-        executionCounter=0;
-        executionTimeAc=0;
-        timer = 0.0;
+        manageCollisions();
+        destroyInactiveEntities();
     }
-    destroyInactiveEntities();
 }
 
 void Scene::destroy()
@@ -93,7 +92,6 @@ std::vector<Entity*> Scene::getEntities()
 
 void Scene::manageCollisions()
 {
-    std::vector<Entity*> entities = getEntities();
     for (unsigned int i = 0; i < int(entities.size()); i++)
     { 
         PhysicsEntity *physicsEntity = dynamic_cast<PhysicsEntity*>(entities[i]);
@@ -116,7 +114,6 @@ void Scene::manageCollisions()
 // in that case, it calls the onCollision method on both entities,
 // it also applies divide and conquer to try to parallelize the process
 void Scene::manageCollisionsPll(unsigned int lo, unsigned int hi, unsigned int depth){
-    std::vector<Entity*> entities = getEntities();
     if(depth>3)
     {
         for (unsigned int i = lo; i < hi; i++)
@@ -138,12 +135,30 @@ void Scene::manageCollisionsPll(unsigned int lo, unsigned int hi, unsigned int d
     }
     else
     {
+        if(depth == 0)
+            startTime = GetTime();
         auto mid = (lo+hi)/2;
         auto left = std::async(std::launch::async, &Scene::manageCollisionsPll, this, lo, mid, depth+1);
         auto right = std::async(std::launch::async, &Scene::manageCollisionsPll, this, mid, hi, depth+1);
         left.get();
         right.get();
     }
+    if(depth == 0)
+        {
+            executionCounter++;
+            endTime = GetTime();
+            executionTime = endTime - startTime;
+            executionTimeAc += executionTime;
+            timer += GetFrameTime();
+
+            if(timer > 0.5)
+            {
+                averageExecutionTime = executionTimeAc / executionCounter;
+                executionCounter=0;
+                executionTimeAc=0;
+                timer = 0.0;
+            }
+        }
 }
 
 void Scene::destroyInactiveEntities()
